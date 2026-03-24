@@ -26,17 +26,16 @@ export default async function handler(req, res) {
 
       console.log('Extracted sender PSID:', senderPsid);
       console.log('Extracted message text:', messageText);
-
-      res.status(200).send('EVENT_RECEIVED');
+      console.log('AUTO_REPLY_ENABLED:', process.env.AUTO_REPLY_ENABLED);
 
       if (!senderPsid || !messageText) {
         console.log('No senderPsid or messageText, skip replying.');
-        return;
+        return res.status(200).send('EVENT_RECEIVED');
       }
 
       if (process.env.AUTO_REPLY_ENABLED !== 'true') {
         console.log('AUTO_REPLY_ENABLED is not true, skip auto reply.');
-        return;
+        return res.status(200).send('EVENT_RECEIVED');
       }
 
       const replyText =
@@ -59,14 +58,13 @@ export default async function handler(req, res) {
       );
 
       const result = await response.json();
+      console.log('Send message status:', response.status);
       console.log('Send message result:', JSON.stringify(result, null, 2));
-      return;
+
+      return res.status(200).send('EVENT_RECEIVED');
     } catch (error) {
       console.error('POST handler error:', error);
-      if (!res.headersSent) {
-        return res.status(500).send('Internal Server Error');
-      }
-      return;
+      return res.status(500).send('Internal Server Error');
     }
   }
 
