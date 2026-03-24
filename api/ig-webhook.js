@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       console.log('META_PAGE_ACCESS_TOKEN exists:', !!accessToken);
 
       const response = await fetch(
-        'https://graph.facebook.com/v25.0/me/messages',
+        'https://graph.instagram.com/v25.0/me/messages',
         {
           method: 'POST',
           headers: {
