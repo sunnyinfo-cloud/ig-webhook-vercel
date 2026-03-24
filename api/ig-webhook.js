@@ -22,14 +22,24 @@ export default async function handler(req, res) {
       const messaging0 = entry0?.messaging?.[0];
 
       const senderPsid = messaging0?.sender?.id;
+      const recipientPsid = messaging0?.recipient?.id;
       const messageText = messaging0?.message?.text;
+      const isEcho = messaging0?.message?.is_echo === true;
 
       console.log('Extracted sender PSID:', senderPsid);
+      console.log('Extracted recipient PSID:', recipientPsid);
       console.log('Extracted message text:', messageText);
+      console.log('is_echo:', isEcho);
       console.log('AUTO_REPLY_ENABLED:', process.env.AUTO_REPLY_ENABLED);
 
       if (!senderPsid || !messageText) {
         console.log('No senderPsid or messageText, skip replying.');
+        return res.status(200).send('EVENT_RECEIVED');
+      }
+
+      // 跳过自己发出去的回声消息
+      if (isEcho) {
+        console.log('Echo message detected, skip auto reply.');
         return res.status(200).send('EVENT_RECEIVED');
       }
 
