@@ -43,13 +43,15 @@ export default async function handler(req, res) {
 
       const accessToken = process.env.META_PAGE_ACCESS_TOKEN;
       console.log('Token length:', accessToken ? accessToken.length : 0);
+      console.log('META_PAGE_ACCESS_TOKEN exists:', !!accessToken);
 
       const response = await fetch(
-        `https://graph.facebook.com/v25.0/me/messages?access_token=${accessToken}`,
+        'https://graph.facebook.com/v25.0/me/messages',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             recipient: { id: senderPsid },
